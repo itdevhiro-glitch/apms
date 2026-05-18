@@ -2,87 +2,27 @@
   "rules": {
     ".read": false,
     ".write": false,
-
     "users": {
       "$uid": {
-        ".read": "auth != null && (auth.uid === $uid || auth.uid === 'VWk87KKm3edSLdIoEhl0oJyiO6m1' || root.child('users').child(auth.uid).child('role').val() === 'admin')",
-        ".write": "auth != null && (auth.uid === $uid || auth.uid === 'VWk87KKm3edSLdIoEhl0oJyiO6m1')",
-        "uid": { ".validate": "newData.val() === $uid" },
-        "name": { ".validate": "newData.isString() && newData.val().length <= 80" },
-        "email": { ".validate": "newData.isString() && newData.val().length <= 120" },
-        "title": { ".validate": "!newData.exists() || (newData.isString() && newData.val().length <= 80)" },
-        "avatar": { ".validate": "!newData.exists() || newData.isString()" },
-        "createdAt": { ".validate": "!newData.exists() || newData.isNumber()" },
-        "lastLogin": { ".validate": "!newData.exists() || newData.isNumber()" },
-        "role": {
-          ".validate": "newData.isString() && newData.val().matches(/^(owner|admin|manager|member|viewer)$/) && (auth.uid === 'VWk87KKm3edSLdIoEhl0oJyiO6m1' || !data.exists() || newData.val() === data.val() || !data.child('role').exists())"
-        },
-        "$other": { ".validate": false }
+        ".read": "auth != null && (auth.uid === $uid || root.child('users').child(auth.uid).child('role').val() === 'owner' || root.child('users').child(auth.uid).child('role').val() === 'admin')",
+        ".write": "auth != null && (auth.uid === $uid || root.child('users').child(auth.uid).child('role').val() === 'owner')"
       }
     },
-
     "projects": {
       ".read": "auth != null",
-      ".write": "auth != null && (auth.uid === 'VWk87KKm3edSLdIoEhl0oJyiO6m1' || root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'manager')",
-      "$id": {
-        ".validate": "newData.hasChildren(['id','name'])",
-        "id": { ".validate": "newData.isString() && newData.val() === $id" },
-        "name": { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 120" },
-        "description": { ".validate": "!newData.exists() || (newData.isString() && newData.val().length <= 1000)" },
-        "status": { ".validate": "!newData.exists() || newData.val().matches(/^(active|planning|review|done|hold)$/)" },
-        "priority": { ".validate": "!newData.exists() || newData.val().matches(/^(low|normal|high|urgent)$/)" },
-        "progress": { ".validate": "!newData.exists() || (newData.isNumber() && newData.val() >= 0 && newData.val() <= 100)" },
-        "budget": { ".validate": "!newData.exists() || newData.isNumber()" },
-        "deadline": { ".validate": "!newData.exists() || newData.isString()" },
-        "createdAt": { ".validate": "!newData.exists() || newData.isNumber()" },
-        "updatedAt": { ".validate": "!newData.exists() || newData.isNumber()" },
-        "createdBy": { ".validate": "!newData.exists() || newData.val() === auth.uid" },
-        "$other": { ".validate": true }
-      }
+      ".write": "auth != null && (root.child('users').child(auth.uid).child('role').val() === 'owner' || root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'manager')"
     },
-
     "tasks": {
       ".read": "auth != null",
-      ".write": "auth != null",
-      "$id": {
-        ".validate": "newData.hasChildren(['id','title'])",
-        "id": { ".validate": "newData.isString() && newData.val() === $id" },
-        "title": { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 140" },
-        "description": { ".validate": "!newData.exists() || (newData.isString() && newData.val().length <= 1000)" },
-        "status": { ".validate": "!newData.exists() || newData.val().matches(/^(todo|progress|review|done)$/)" },
-        "priority": { ".validate": "!newData.exists() || newData.val().matches(/^(low|normal|high|urgent)$/)" },
-        "projectId": { ".validate": "!newData.exists() || newData.isString()" },
-        "createdAt": { ".validate": "!newData.exists() || newData.isNumber()" },
-        "updatedAt": { ".validate": "!newData.exists() || newData.isNumber()" },
-        "createdBy": { ".validate": "!newData.exists() || newData.val() === auth.uid" },
-        "$other": { ".validate": true }
-      }
+      ".write": "auth != null"
     },
-
     "finance": {
-      ".read": "auth != null && (auth.uid === 'VWk87KKm3edSLdIoEhl0oJyiO6m1' || root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'manager')",
-      ".write": "auth != null && (auth.uid === 'VWk87KKm3edSLdIoEhl0oJyiO6m1' || root.child('users').child(auth.uid).child('role').val() === 'admin')",
-      "$id": {
-        ".validate": "newData.hasChildren(['id','title','type','amount'])",
-        "id": { ".validate": "newData.isString() && newData.val() === $id" },
-        "title": { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 120" },
-        "type": { ".validate": "newData.val().matches(/^(income|expense)$/)" },
-        "amount": { ".validate": "newData.isNumber() && newData.val() >= 0" },
-        "date": { ".validate": "!newData.exists() || newData.isString()" },
-        "note": { ".validate": "!newData.exists() || (newData.isString() && newData.val().length <= 1000)" },
-        "createdAt": { ".validate": "!newData.exists() || newData.isNumber()" },
-        "updatedAt": { ".validate": "!newData.exists() || newData.isNumber()" },
-        "createdBy": { ".validate": "!newData.exists() || newData.val() === auth.uid" },
-        "$other": { ".validate": true }
-      }
+      ".read": "auth != null && (root.child('users').child(auth.uid).child('role').val() === 'owner' || root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'manager')",
+      ".write": "auth != null && (root.child('users').child(auth.uid).child('role').val() === 'owner' || root.child('users').child(auth.uid).child('role').val() === 'admin')"
     },
-
     "activity": {
-      ".read": "auth != null && (auth.uid === 'VWk87KKm3edSLdIoEhl0oJyiO6m1' || root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'manager')",
-      "$id": {
-        ".write": "auth != null && newData.child('uid').val() === auth.uid",
-        ".validate": "newData.hasChildren(['id','action','target','uid','user','time']) && newData.child('id').val() === $id && newData.child('time').isNumber()"
-      }
+      ".read": "auth != null",
+      ".write": "auth != null"
     }
   }
 }
