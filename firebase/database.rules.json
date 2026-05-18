@@ -1,0 +1,28 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "users": {
+      "$uid": {
+        ".read": "auth != null && (auth.uid === $uid || root.child('users').child(auth.uid).child('role').val() === 'owner' || root.child('users').child(auth.uid).child('role').val() === 'admin')",
+        ".write": "auth != null && (auth.uid === $uid || root.child('users').child(auth.uid).child('role').val() === 'owner')"
+      }
+    },
+    "projects": {
+      ".read": "auth != null",
+      ".write": "auth != null && (root.child('users').child(auth.uid).child('role').val() === 'owner' || root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'manager')"
+    },
+    "tasks": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "finance": {
+      ".read": "auth != null && (root.child('users').child(auth.uid).child('role').val() === 'owner' || root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'manager')",
+      ".write": "auth != null && (root.child('users').child(auth.uid).child('role').val() === 'owner' || root.child('users').child(auth.uid).child('role').val() === 'admin')"
+    },
+    "activity": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    }
+  }
+}
